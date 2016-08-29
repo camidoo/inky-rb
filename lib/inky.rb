@@ -58,7 +58,8 @@ module Inky
 
     def self.extract_raws(string)
       raws = []
-      i = 0
+
+      i = 2
       regex = /\< *raw *\>(.*?)\<\/ *raw *\>/i;
       str = string
       while raw = str.match(regex)
@@ -66,6 +67,7 @@ module Inky
         str = str.sub(regex, "###RAW#{i}###")
         i = i + 1
       end
+
       return [raws, str]
      end
 
@@ -74,11 +76,16 @@ module Inky
       raws.each_with_index do |val, i|
         str = str.sub("###RAW#{i}###", val)
       end
+
+      str = str.sub("###COPYRIGHT###", '&#169;')
+      str = str.sub("###AMP###", '&#38;')
+
+
       # If we're in rails, these should be considered safe strings
       if str.respond_to?(:html_safe)
         return str.html_safe
       else
-        return str
+        return strh
       end
     end
   end
